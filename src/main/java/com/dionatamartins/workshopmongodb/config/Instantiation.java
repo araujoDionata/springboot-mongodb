@@ -10,34 +10,38 @@ import org.springframework.context.annotation.Configuration;
 
 import com.dionatamartins.workshopmongodb.domain.Post;
 import com.dionatamartins.workshopmongodb.domain.User;
+import com.dionatamartins.workshopmongodb.dto.AuthorDTO;
 import com.dionatamartins.workshopmongodb.repository.PostRepository;
 import com.dionatamartins.workshopmongodb.repository.UserRepository;
 
 @Configuration
 public class Instantiation implements CommandLineRunner {
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepository userReposiroty;
+
 	@Autowired
-	private PostRepository postRepository;
+	private PostRepository postReposiroty;
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... arg0) throws Exception {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		sdf.setTimeZone(TimeZone.getTimeZone(("GMT")));
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-		userRepository.deleteAll();
-		postRepository.deleteAll();
+		userReposiroty.deleteAll();
+		postReposiroty.deleteAll();
 
 		User maria = new User(null, "Maria Brown", "maria@gmail.com");
 		User alex = new User(null, "Alex Green", "alex@gmail.com");
 		User bob = new User(null, "Bob Grey", "bob@gmail.com");
 
-		Post post1 = new Post(null, sdf.parse("21/03/2018"), "Partiu viagem", "Viajando para SP", maria);
-		Post post2 = new Post(null, sdf.parse("23/03/2018"), "Bom dia", "Um ótimo dia para todos", maria);
+		userReposiroty.saveAll(Arrays.asList(maria, alex, bob));
 
-		userRepository.saveAll(Arrays.asList(maria, alex, bob));
-		postRepository.saveAll(Arrays.asList(post1, post2));
+		Post post1 = new Post(null, sdf.parse("21/03/2018"), "Partiu viagem", "Vou viajar para São Paulo. Abraços!",
+				new AuthorDTO(maria));
+		Post post2 = new Post(null, sdf.parse("23/03/2018"), "Bom dia", "Acordei feliz hoje!", new AuthorDTO(maria));
+
+		postReposiroty.saveAll(Arrays.asList(post1, post2));
 	}
 
 }
